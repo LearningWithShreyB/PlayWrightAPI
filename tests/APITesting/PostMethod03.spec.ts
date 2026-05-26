@@ -1,14 +1,38 @@
 import { test, expect } from "@playwright/test";
-//import * as fs from 'fs';
-//import requestBody from "../../testdata/post_request_body.json" with { type: "json" };
-import requestBody from "../../testdata/post_request_body.json"// with { type: "json" };
+import { faker } from '@faker-js/faker'
+import { DateTime } from 'luxon';
 
-test("POST Request Using JSON File", async ({ request }) => {
+test("POST Request Using Faker Library", async ({ request }) => {
 
     //requestBody Formation
     //const requestBody = await import("../../testdata/post_request_body.json");
 
     //Sending Post Request
+
+    const firstname = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    const totalprice = faker.number.int({ min: 100, max: 5000 });
+    const depositpaid = faker.datatype.boolean();
+
+    const checkindate = DateTime.now().toFormat("yyyy-MM-dd");
+    const checkoutdate = DateTime.now().plus({ day: 5 }).toFormat("yyyy-MM-dd");
+
+    const additionalneeds = "super bowls";
+
+    const requestBody = {
+        firstname: firstname,
+        lastname: lastName,
+        totalprice: totalprice,
+        depositpaid: depositpaid,
+        bookingdates: {
+            checkin: checkindate, //yyyy-mm-dd
+            checkout: checkoutdate,
+        },
+        additionalneeds: additionalneeds,
+    }
+
+
+
     const response = await request.post("/booking", { data: requestBody });
     const responseBody = await response.json();
     console.log(responseBody);
